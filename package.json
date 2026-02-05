@@ -1,0 +1,33 @@
+{
+  "name": "rate-calculator-applet",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "type": "module",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "tsx watch api/v1/quotes.ts",
+    "build": "tsc",
+    "test": "tsx tests/calculator.test.ts",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel"
+  },
+  "keywords": ["rate-calculator", "quote-generator", "wholetone", "loove-os"],
+  "author": "LOOVE OS",
+  "license": "ISC",
+  "description": "Wholetone Suite Rate Calculator - API-driven quote generation for studio and event space bookings",
+  "devDependencies": {
+    "@vercel/node": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.94.0",
+    "@types/node": "^25.2.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
