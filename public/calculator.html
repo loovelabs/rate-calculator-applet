@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wholetone Rate Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+        }
+        
+        @media (max-width: 968px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .form-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .radio-option,
+        .checkbox-option {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .radio-option:hover,
+        .checkbox-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .radio-option input,
+        .checkbox-option input {
+            margin-right: 12px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        
+        .option-content {
+            flex: 1;
+        }
+        
+        .option-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .option-desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .quote-preview {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-radius: 12px;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .quote-preview h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .quote-header {
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .quote-header h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 8px;
+        }
+        
+        .quote-info {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .line-items {
+            margin-bottom: 20px;
+        }
+        
+        .line-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .line-item-desc {
+            flex: 1;
+        }
+        
+        .line-item-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .line-item-details {
+            font-size: 0.85em;
+            color: #666;
+        }
+        
+        .line-item-total {
+            font-weight: 600;
+            color: #333;
+            margin-left: 20px;
+        }
+        
+        .quote-totals {
+            border-top: 2px solid #667eea;
+            padding-top: 15px;
+            margin-top: 20px;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 0.95em;
+        }
+        
+        .total-row.grand-total {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            border-top: 2px solid #667eea;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .placeholder {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .placeholder svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+        
+        .error {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Session Builder</h1>
+            <p>Quote Generator 2.0</p>
+        </div>
+        
+        <div class="content">
+            <!-- Left Column - Form -->
+            <div class="form-column">
+                <form id="quoteForm">
+                    <!-- Project Info -->
+                    <div class="form-section">
+                        <h3>Project Info</h3>
+                        <div class="form-group">
+                            <label for="projectName">Project Name *</label>
+                            <input type="text" id="projectName" name="projectName" required placeholder="Enter project name">
+                        </div>
+                    </div>
+                    
+                    <!-- Booking Type -->
+                    <div class="form-section">
+                        <h3>Booking Type *</h3>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="bookingType" value="production" required>
+                                <div class="option-content">
+                                    <div class="option-title">Production</div>
+                                    <div class="option-desc">Recording session, live video shoot</div>
+                                </div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="bookingType" value="post">
+                                <div class="option-content">
+                                    <div class="option-title">Post-Production</div>
+                                    <div class="option-desc">Audio mix/edit, video edit/post</div>
+                                </div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="bookingType" value="facility rental">
+                                <div class="option-content">
+                                    <div class="option-title">Site Rental</div>
+                                    <div class="option-desc">Showcase, photo shoot, event</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Media Type -->
+                    <div class="form-section" id="mediaTypeSection" style="display:none;">
+                        <h3>Media Type *</h3>
+                        <div class="radio-group" id="mediaTypeOptions">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                    
+                    <!-- Length -->
+                    <div class="form-section" id="lengthSection" style="display:none;">
+                        <h3>Session Length</h3>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="length" value="full" checked>
+                                <div class="option-content">
+                                    <div class="option-title">Full Day</div>
+                                    <div class="option-desc">10 AM - 10 PM</div>
+                                </div>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="length" value="half">
+                                <div class="option-content">
+                                    <div class="option-title">Half Day</div>
+                                    <div class="option-desc">6-hour session</div>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label for="days">Number of Days</label>
+                            <input type="number" id="days" name="days" min="1" value="1">
+                        </div>
+                    </div>
+                    
+                    <!-- Staffing -->
+                    <div class="form-section" id="staffingSection" style="display:none;">
+                        <h3>Staffing</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="staffing.engineer" id="engineer">
+                                <div class="option-content">
+                                    <div class="option-title">House Engineer</div>
+                                </div>
+                            </label>
+                            <label class="checkbox-option" id="videoEngineerOption" style="display:none;">
+                                <input type="checkbox" name="staffing.videoEngineer" id="videoEngineer">
+                                <div class="option-content">
+                                    <div class="option-title">Video Engineer</div>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group" id="hoursPerDayGroup" style="margin-top: 20px; display:none;">
+                            <label for="hoursPerDay">Hours per Day</label>
+                            <input type="number" id="hoursPerDay" name="staffing.hoursPerDay" min="1" max="24" value="10">
+                        </div>
+                    </div>
+                    
+                    <!-- Equipment -->
+                    <div class="form-section" id="equipmentSection" style="display:none;">
+                        <h3>Equipment & Add-ons</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="equipment.hardDrive" id="hardDrive">
+                                <div class="option-content">
+                                    <div class="option-title">Hard Drive</div>
+                                </div>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="equipment.dvd" id="dvd">
+                                <div class="option-content">
+                                    <div class="option-title">DVD</div>
+                                </div>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="equipment.cd" id="cd">
+                                <div class="option-content">
+                                    <div class="option-title">CD-R</div>
+                                </div>
+                            </label>
+                            <label class="checkbox-option">
+                                <input type="checkbox" name="equipment.pianoTuning" id="pianoTuning">
+                                <div class="option-content">
+                                    <div class="option-title">Piano Tuning</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Info -->
+                    <div class="form-section">
+                        <h3>Contact Information (Optional)</h3>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Right Column - Quote Preview -->
+            <div class="quote-column">
+                <div class="quote-preview">
+                    <h3>Quote Preview</h3>
+                    <div id="quoteContent">
+                        <div class="placeholder">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <p>Your quote will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let debounceTimer;
+        const form = document.getElementById('quoteForm');
+        const quoteContent = document.getElementById('quoteContent');
+        
+        // Form change handlers
+        form.addEventListener('change', handleFormChange);
+        form.addEventListener('input', handleFormChange);
+        
+        function handleFormChange(e) {
+            // Handle conditional logic
+            const bookingType = document.querySelector('input[name="bookingType"]:checked')?.value;
+            const mediaType = document.querySelector('input[name="mediaType"]:checked')?.value;
+            
+            // Show/hide media type section
+            if (bookingType) {
+                document.getElementById('mediaTypeSection').style.display = 'block';
+                updateMediaTypeOptions(bookingType);
+            }
+            
+            // Show/hide subsequent sections
+            if (mediaType) {
+                document.getElementById('lengthSection').style.display = 'block';
+                document.getElementById('staffingSection').style.display = 'block';
+                document.getElementById('equipmentSection').style.display = 'block';
+                
+                // Show video engineer option for av/video
+                if (mediaType === 'av' || mediaType === 'video') {
+                    document.getElementById('videoEngineerOption').style.display = 'block';
+                } else {
+                    document.getElementById('videoEngineerOption').style.display = 'none';
+                }
+            }
+            
+            // Show hours per day when staff selected
+            const engineerChecked = document.getElementById('engineer').checked;
+            const videoEngineerChecked = document.getElementById('videoEngineer').checked;
+            if (engineerChecked || videoEngineerChecked) {
+                document.getElementById('hoursPerDayGroup').style.display = 'block';
+            } else {
+                document.getElementById('hoursPerDayGroup').style.display = 'none';
+            }
+            
+            // Debounce quote calculation
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(calculateQuote, 500);
+        }
+        
+        function updateMediaTypeOptions(bookingType) {
+            const container = document.getElementById('mediaTypeOptions');
+            let options = '';
+            
+            if (bookingType === 'production') {
+                options = `
+                    <label class="radio-option">
+                        <input type="radio" name="mediaType" value="audio" required>
+                        <div class="option-content">
+                            <div class="option-title">Audio Only</div>
+                        </div>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="mediaType" value="av">
+                        <div class="option-content">
+                            <div class="option-title">Audio and Video</div>
+                        </div>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="mediaType" value="video">
+                        <div class="option-content">
+                            <div class="option-title">Video Only</div>
+                        </div>
+                    </label>
+                `;
+            } else if (bookingType === 'post') {
+                options = `
+                    <label class="radio-option">
+                        <input type="radio" name="mediaType" value="audio" required>
+                        <div class="option-content">
+                            <div class="option-title">Audio Mix or Edit</div>
+                        </div>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="mediaType" value="video">
+                        <div class="option-content">
+                            <div class="option-title">Video Post</div>
+                        </div>
+                    </label>
+                `;
+            } else {
+                options = `
+                    <label class="radio-option">
+                        <input type="radio" name="mediaType" value="audio" required>
+                        <div class="option-content">
+                            <div class="option-title">Audio</div>
+                        </div>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="mediaType" value="av">
+                        <div class="option-content">
+                            <div class="option-title">Audio/Video</div>
+                        </div>
+                    </label>
+                `;
+            }
+            
+            container.innerHTML = options;
+            container.querySelectorAll('input').forEach(input => {
+                input.addEventListener('change', handleFormChange);
+            });
+        }
+        
+        async function calculateQuote() {
+            const projectName = document.getElementById('projectName').value;
+            const bookingType = document.querySelector('input[name="bookingType"]:checked')?.value;
+            const mediaType = document.querySelector('input[name="mediaType"]:checked')?.value;
+            
+            if (!projectName || !bookingType || !mediaType) {
+                return;
+            }
+            
+            const formData = {
+                projectName,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                bookingType,
+                mediaType,
+                days: parseInt(document.getElementById('days').value) || 1,
+                staffing: {
+                    engineer: document.getElementById('engineer').checked,
+                    videoEngineer: document.getElementById('videoEngineer').checked,
+                    hoursPerDay: parseInt(document.getElementById('hoursPerDay').value) || 10
+                },
+                equipment: {
+                    hardDrive: document.getElementById('hardDrive').checked,
+                    dvd: document.getElementById('dvd').checked,
+                    cd: document.getElementById('cd').checked,
+                    pianoTuning: document.getElementById('pianoTuning').checked
+                }
+            };
+            
+            // Show loading
+            quoteContent.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Calculating your quote...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch('/api/v1/quotes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to calculate quote');
+                }
+                
+                const quote = await response.json();
+                displayQuote(quote, formData);
+            } catch (error) {
+                quoteContent.innerHTML = `
+                    <div class="error">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        function displayQuote(quote, formData) {
+            const formatCurrency = (cents) => {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD'
+                }).format(cents / 100);
+            };
+            
+            let lineItemsHTML = '';
+            quote.calculation.lineItems.forEach(item => {
+                lineItemsHTML += `
+                    <div class="line-item">
+                        <div class="line-item-desc">
+                            <div class="line-item-title">${item.description}</div>
+                            <div class="line-item-details">${item.quantity} × ${formatCurrency(item.unit_price_cents)}</div>
+                        </div>
+                        <div class="line-item-total">${formatCurrency(item.total_cents)}</div>
+                    </div>
+                `;
+            });
+            
+            quoteContent.innerHTML = `
+                <div class="quote-header">
+                    <h4>${formData.projectName}</h4>
+                    <div class="quote-info">
+                        ${formData.name ? `<div>Client: ${formData.name}</div>` : ''}
+                        ${formData.email ? `<div>Email: ${formData.email}</div>` : ''}
+                        <div>Quote ID: ${quote.quoteId.substring(0, 8)}...</div>
+                        <div>Created: ${new Date(quote.createdAt).toLocaleDateString()}</div>
+                    </div>
+                </div>
+                
+                <div class="line-items">
+                    <h5 style="margin-bottom: 15px; color: #555;">Line Items</h5>
+                    ${lineItemsHTML}
+                </div>
+                
+                <div class="quote-totals">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span>${formatCurrency(quote.calculation.subtotal)}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax (8.875%)</span>
+                        <span>${formatCurrency(quote.calculation.tax)}</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Total</span>
+                        <span>${formatCurrency(quote.calculation.total)}</span>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="window.print()">Print Quote</button>
+                    <button class="btn btn-secondary" onclick="copyLink('${quote.quoteId}')">Copy Link</button>
+                </div>
+            `;
+        }
+        
+        function copyLink(quoteId) {
+            const link = window.location.origin + '/calculator.html?quote=' + quoteId;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Link copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>
